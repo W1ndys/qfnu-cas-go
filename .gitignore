@@ -1,3 +1,17 @@
+# custom ignores
+node_modules/
+data/
+build/
+
+# Tailwind CSS Standalone CLI (all platforms)
+web/tailwindcss
+web/tailwindcss.exe
+
+# claude cli specific ignores
+.claude/
+.spec-workflow/
+.serena/
+
 # If you prefer the allow list template instead of the deny list, see community template:
 # https://github.com/github/gitignore/blob/main/community/Golang/Go.AllowList.gitignore
 #
