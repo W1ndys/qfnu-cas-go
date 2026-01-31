@@ -61,7 +61,10 @@ $sshCmdPrefix = @("ssh", "-i", "$IdentityFile", "-p", "$Port", "-o", "StrictHost
 
 # 2. 交叉编译 (Windows -> Linux)
 Write-Host "[-] 正在编译 Linux (amd64) 二进制文件..." -ForegroundColor Cyan
-$BinaryName = "qfnu-login"
+$ProjectName = "qfnu-cas-go"
+$TargetOS = "linux"
+$TargetArch = "amd64"
+$BinaryName = "${ProjectName}-${TargetOS}-${TargetArch}"
 
 # 保存旧的环境变量
 $OriginalGOOS = $env:GOOS
@@ -69,8 +72,8 @@ $OriginalGOARCH = $env:GOARCH
 
 try {
     $env:CGO_ENABLED = "0"
-    $env:GOOS = "linux"
-    $env:GOARCH = "amd64"
+    $env:GOOS = $TargetOS
+    $env:GOARCH = $TargetArch
 
     go build -ldflags "-s -w" -o $BinaryName .
 
