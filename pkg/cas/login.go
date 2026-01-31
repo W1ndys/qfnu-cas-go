@@ -2,6 +2,7 @@ package cas
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"io"
@@ -9,6 +10,7 @@ import (
 	"net/http"
 	"net/url"
 	"strings"
+	"time"
 
 	"github.com/PuerkitoBio/goquery"
 	"github.com/W1ndys/qfnu-cas-go/pkg/auth"
@@ -25,6 +27,11 @@ const (
 
 // Login 执行完整的 CAS 登录流程
 func (c *Client) Login(ctx context.Context, username, password string) error {
+	// 0. 检查是否需要验证码
+	if err := c.checkNeedCaptcha(ctx, username); err != nil {
+		return err
+	}
+
 	loginPageURL := fmt.Sprintf("%s?service=%s", URLLogin, url.QueryEscape(URLService))
 
 	// 1. 获取 salt 和 execution
@@ -48,6 +55,41 @@ func (c *Client) Login(ctx context.Context, username, password string) error {
 	// 4. 完成 SSO 认证流程
 	if err := c.completeSSO(ctx, ticketURL); err != nil {
 		return err
+	}
+
+	return nil
+}
+
+// checkNeedCaptcha 检查账号是否需要验证码
+func (c *Client) checkNeedCaptcha(ctx context.Context, username string) error {
+	timestamp := time.Now().UnixMilli()
+	checkURL := fmt.Sprintf("https://ids.qfnu.edu.cn/authserver/checkNeedCaptcha.htl?username=%s&_=%d", username, timestamp)
+
+	req, err := http.NewRequestWithContext(ctx, "GET", checkURL, nil)
+	if err != nil {
+		return fmt.Errorf("创建验证码检查请求失败: %w", err)
+	}
+
+	resp, err := c.httpClient.Do(req)
+	if err != nil {
+		return fmt.Errorf("检查验证码状态失败: %w", err)
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode != http.StatusOK {
+		return fmt.Errorf("验证码检查接口异常: %d", resp.StatusCode)
+	}
+
+	var result struct {
+		IsNeed bool `json:"isNeed"`
+	}
+
+	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
+		return fmt.Errorf("解析验证码检查响应失败: %w", err)
+	}
+
+	if result.IsNeed {
+		return errors.New("当前账号需输入验证码，请先在浏览器手动登录一次以消除验证状态")
 	}
 
 	return nil
