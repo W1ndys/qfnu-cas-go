@@ -17,7 +17,7 @@ const (
 	// URL 常量
 	URLService     = "http://zhjw.qfnu.edu.cn/sso.jsp"
 	URLLogin       = "http://ids.qfnu.edu.cn/authserver/login"
-	URLMainPage    = "http://zhjw.qfnu.edu.cn/jsxsd/framework/xsMain.jsp"
+	URLMainPage    = "http://zhjw.qfnu.edu.cn/jsxsd/framework/jsMain.jsp"
 	URLSuccessMark = "教学一体化服务平台" // 登录成功的页面标识
 )
 
