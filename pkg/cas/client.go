@@ -1,7 +1,6 @@
 package cas
 
 import (
-	"context"
 	"net/http"
 	"net/http/cookiejar"
 	"time"
