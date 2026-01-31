@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"log"
 	"net/http"
 	"net/url"
 	"strings"
@@ -15,9 +16,10 @@ import (
 
 const (
 	// URL 常量
-	URLService     = "http://zhjw.qfnu.edu.cn/sso.jsp"
-	URLLogin       = "http://ids.qfnu.edu.cn/authserver/login"
-	URLMainPage    = "http://zhjw.qfnu.edu.cn/jsxsd/framework/jsMain.jsp"
+	URLService  = "http://zhjw.qfnu.edu.cn/sso.jsp"
+	URLLogin    = "http://ids.qfnu.edu.cn/authserver/login"
+	URLMainPage = "http://zhjw.qfnu.edu.cn/jsxsd/framework/xsMain.jsp"
+	// URLMainPage = "http://zhjw.qfnu.edu.cn/jsxsd/framework/jsMain.jsp" // 教师端请使用这个
 	URLSuccessMark = "教学一体化服务平台" // 登录成功的页面标识
 )
 
@@ -167,6 +169,8 @@ func (c *Client) completeSSO(ctx context.Context, ticketURL *url.URL) error {
 	bodyBytes, _ := io.ReadAll(resp.Body)
 	if !strings.Contains(string(bodyBytes), URLSuccessMark) {
 		return errors.New("登录流程结束，但未检测到登录成功标识")
+	} else {
+		log.Println("检测到登录成功标识，登录流程完成。")
 	}
 
 	return nil
