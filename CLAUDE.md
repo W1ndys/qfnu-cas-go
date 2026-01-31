@@ -7,7 +7,7 @@
 **当前状态**: 本仓库目前作为一个骨架，包含详细的协议文档。实现逻辑描述在 `docs/qfnu-cas-login-api.md` 中。
 
 ## 开发命令
-- **初始化模块**: `go mod init qfnu-cas-go` (如果是重新开始)
+- **初始化模块**: `go mod init github.com/W1ndys/qfnu-cas-go` (如果是重新开始)
 - **依赖管理**: `go get github.com/PuerkitoBio/goquery` (用于 HTML 解析)
 - **运行**: `go run .`
 - **测试**: `go test ./...`
